@@ -1,12 +1,30 @@
 #include "DeviceDriver.h"
+#include "Windows.h"
+#include <stdexcept>
+
 
 DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware) : m_hardware(hardware)
 {}
 
 int DeviceDriver::read(long address)
 {
-    // TODO: implement this method properly
-    return (int)(m_hardware->read(address));
+    int readCount = 0;
+    int readValue = 0;
+    do
+    {
+        const auto currentValue = m_hardware->read(address);
+        if (readCount == 0)
+        {
+            readValue = currentValue;
+        }
+
+        if (currentValue != readValue)
+        {
+            throw ReadFailException();
+        }
+    } while (readCount++ < MAX_TRY_COUNT);
+
+    return readValue;
 }
 
 void DeviceDriver::write(long address, int data)

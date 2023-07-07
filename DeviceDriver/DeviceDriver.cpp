@@ -11,6 +11,7 @@ int DeviceDriver::read(long address)
     int readValue = m_hardware->read(address);
 	for (int readCount = 1; readCount < MAX_TRY_COUNT; readCount++)
 	{
+        Sleep(WATING_TIME_IN_MS);
         if (m_hardware->read(address) == readValue)
             continue;
 

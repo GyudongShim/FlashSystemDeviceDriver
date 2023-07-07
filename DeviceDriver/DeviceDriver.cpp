@@ -8,23 +8,14 @@ DeviceDriver::DeviceDriver(FlashMemoryDevice* hardware) : m_hardware(hardware)
 
 int DeviceDriver::read(long address)
 {
-    int readCount = 0;
-    int readValue = 0;
-    do
-    {
-        const auto currentValue = m_hardware->read(address);
-        if (readCount == 0)
-        {
-            readValue = currentValue;
-        }
+    int readValue = m_hardware->read(address);
+	for (int readCount = 1; readCount < MAX_TRY_COUNT; readCount++)
+	{
+        if (m_hardware->read(address) == readValue)
+            continue;
 
-        if (currentValue != readValue)
-        {
-            throw ReadFailException();
-        }
-
-        Sleep(WATING_TIME_IN_MS);
-    } while (++readCount < MAX_TRY_COUNT);
+        throw ReadFailException();
+	}
 
     return readValue;
 }
@@ -33,7 +24,7 @@ void DeviceDriver::write(long address, int data)
 {
     const auto currentValue = m_hardware->read(address);
 
-    if (currentValue != 0xFF)
+    if (currentValue != DeviceDriver::ERASED_VALUE)
     {
         throw WriteFailException();
     }

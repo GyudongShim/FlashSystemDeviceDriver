@@ -22,7 +22,7 @@ int DeviceDriver::read(long address)
         {
             throw ReadFailException();
         }
-    } while (readCount++ < MAX_TRY_COUNT);
+    } while (++readCount < MAX_TRY_COUNT);
 
     return readValue;
 }

@@ -12,8 +12,7 @@ int DeviceDriver::read(long address)
     int readValue = 0;
     do
     {
-        auto currentValue = m_hardware->read(address);
-
+        const auto currentValue = m_hardware->read(address);
         if (readCount == 0)
         {
             readValue = currentValue;
@@ -25,7 +24,7 @@ int DeviceDriver::read(long address)
         }
     } while (readCount++ < MAX_TRY_COUNT);
 
-    return (int)(m_hardware->read(address));
+    return readValue;
 }
 
 void DeviceDriver::write(long address, int data)

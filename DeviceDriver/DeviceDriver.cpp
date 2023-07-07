@@ -22,6 +22,8 @@ int DeviceDriver::read(long address)
         {
             throw ReadFailException();
         }
+
+        Sleep(WATING_TIME_IN_MS);
     } while (++readCount < MAX_TRY_COUNT);
 
     return readValue;
